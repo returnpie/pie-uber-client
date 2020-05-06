@@ -1,7 +1,8 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
 import bgImage from "../../Images/bg.png";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+import Helmet from "react-helmet";
 
 const Container = styled.div`
   height: 100vh;
@@ -62,27 +63,43 @@ const SocialLink = styled.span`
   font-size: 20px;
 `;
 
-interface IProps extends RouteComponentProps<any> {}
+interface IProps {
+  onClickPhoneLogin: () => void;
+  onClickSocialLogin: () => void;
+}
 
-const OutHomePresenter: React.SFC<IProps> = () => (
-  <Container>
-    <Header>
-      <Logo>
-        <Title>PIE-uber</Title>
-      </Logo>
-    </Header>
-    <Footer>
-      <PhoneLogin>
-        <Subtitle>Get moving with PIE-uber</Subtitle>
-        <FakeInput>
-          🇰🇷 +82 <Grey>Enter your mobile number</Grey>
-        </FakeInput>
-      </PhoneLogin>
-      <SocialLogin>
-        <SocialLink>Or connect with social</SocialLink>
-      </SocialLogin>
-    </Footer>
-  </Container>
-);
+const LoginPresenter: React.FunctionComponent<IProps> = (props: IProps) => {
+  // const { onClickPhoneLogin, onClickSocialLogin } = props;
+  return (
+    <Container>
+      <Helmet>
+        <title>PIE-UBER | LOGIN</title>
+      </Helmet>
+      <Header>
+        <Logo>
+          <Title>PIE-uber</Title>
+        </Logo>
+      </Header>
+      <Footer>
+        <Link to={"/phone-login"}>
+          <PhoneLogin>
+            <Subtitle>Get moving with PIE-uber</Subtitle>
+            <FakeInput>
+              <span role="img" aria-label="">
+                🇰🇷
+              </span>{" "}
+              +82 <Grey>Enter your mobile number</Grey>
+            </FakeInput>
+          </PhoneLogin>
+        </Link>
+        <Link to={"/social-login"}>
+          <SocialLogin>
+            <SocialLink>Or connect with social</SocialLink>
+          </SocialLogin>
+        </Link>
+      </Footer>
+    </Container>
+  );
+};
 
-export default OutHomePresenter;
+export default LoginPresenter;
