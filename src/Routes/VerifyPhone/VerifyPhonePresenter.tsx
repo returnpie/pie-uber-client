@@ -46,7 +46,7 @@ const VerifyPhonePresenter: React.FunctionComponent<IProps> = ({
       <Button
         disabled={loading}
         value={loading ? "Verifying" : "Submit"}
-        onClick={null}
+        onClick={onSubmit}
       />
     </ExtendedForm>
   </Container>

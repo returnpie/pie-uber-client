@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import { Mutation } from "react-apollo";
 import { RouteComponentProps } from "react-router-dom";
 // import { toast } from "react-toastify";
@@ -6,47 +6,52 @@ import { RouteComponentProps } from "react-router-dom";
 // import { verifyPhone, verifyPhoneVariables } from "../../types/api";
 import VerifyPhonePresenter from "./VerifyPhonePresenter";
 import { VERIFY_PHONE } from "./VerifyPhoneQueries";
+import useInput from "../../Hooks/useInput";
+import { useMutation } from "@apollo/react-hooks";
+import { toast } from "react-toastify";
 
-interface IState {
-  verificationKey: string;
-  phoneNumber: string;
+interface IProps extends RouteComponentProps {
+  data: any;
 }
 
-interface IProps extends RouteComponentProps<any> {}
+const VerifyPhoneContainer: React.FunctionComponent<IProps> = (props) => {
+  const phoneNumber = props.location.state;
+  const [loading, setLoading] = useState(false);
+  const verificationKey = useInput("");
+  const [completePhoneVerificationMutation] = useMutation(VERIFY_PHONE);
 
-// class VerifyMutation extends Mutation<verifyPhone, verifyPhoneVariables> {}
-
-class VerifyPhoneContainer extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    if (!props.location.state) {
-      props.history.push("/");
+  useEffect(() => {
+    if (!phoneNumber) {
+      props.history.replace("/");
     }
-    this.state = {
-      phoneNumber: "",
-      verificationKey: ""
-    };
-  }
-  public render() {
-    const { verificationKey, phoneNumber } = this.state;
-    return (
-      <VerifyPhonePresenter
-        verificationKey={''}
-        loading={true}
-        onChange={this.onInputChange}
-        onSubmit={undefined}
-      />
-    );
-  }
+  }, []);
 
-  public onInputChange: React.ChangeEventHandler<HTMLInputElement> = event => {
-    const {
-      target: { name, value }
-    } = event;
-    this.setState({
-      [name]: value
-    } as any);
+  const onSubmit = async () => {
+    setLoading(true);
+    const key = verificationKey.value;
+    const { data } = await completePhoneVerificationMutation({
+      variables: {
+        key,
+        phoneNumber,
+      },
+    });
+    if (data && data.CompletePhoneVerification && data.CompletePhoneVerification.ok) {
+      toast.success(`hello ${phoneNumber}`);
+      console.log(data);
+    } else {
+      toast.error('please check your verification code');
+      setLoading(false);
+    }
   };
-}
+
+  return (
+    <VerifyPhonePresenter
+      verificationKey={verificationKey.value}
+      loading={loading}
+      onChange={verificationKey.onChange}
+      onSubmit={onSubmit}
+    />
+  );
+};
 
 export default VerifyPhoneContainer;
