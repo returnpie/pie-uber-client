@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 // import { Mutation } from "react-apollo";
 import { RouteComponentProps } from "react-router-dom";
 // import { toast } from "react-toastify";
-// import { LOG_USER_IN } from "../../sharedQueries";
+import { LOG_USER_IN } from "../../sharedQueries.local";
 // import { verifyPhone, verifyPhoneVariables } from "../../types/api";
 import VerifyPhonePresenter from "./VerifyPhonePresenter";
 import { VERIFY_PHONE } from "./VerifyPhoneQueries";
@@ -19,6 +19,7 @@ const VerifyPhoneContainer: React.FunctionComponent<IProps> = (props) => {
   const [loading, setLoading] = useState(false);
   const verificationKey = useInput("");
   const [completePhoneVerificationMutation] = useMutation(VERIFY_PHONE);
+  const [logUserInMutation] = useMutation(LOG_USER_IN);
 
   useEffect(() => {
     if (!phoneNumber) {
@@ -35,11 +36,22 @@ const VerifyPhoneContainer: React.FunctionComponent<IProps> = (props) => {
         phoneNumber,
       },
     });
-    if (data && data.CompletePhoneVerification && data.CompletePhoneVerification.ok) {
+    if (
+      data &&
+      data.CompletePhoneVerification &&
+      data.CompletePhoneVerification.ok
+    ) {
       toast.success(`hello ${phoneNumber}`);
-      console.log(data);
+      const token = data.CompletePhoneVerification.token;
+      if (token) {
+        logUserInMutation({
+          variables: {
+            token,
+          },
+        });
+      }
     } else {
-      toast.error('please check your verification code');
+      toast.error("please check your verification code");
       setLoading(false);
     }
   };

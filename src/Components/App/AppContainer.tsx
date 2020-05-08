@@ -8,7 +8,7 @@ import AppPresenter from "./AppPresenter";
 const AppContainer = (props: any) => {
   return (
     <>
-      <AppPresenter isLoggedIn={props.isLoggedIn as boolean} />
+      <AppPresenter isLoggedIn={props.data.auth.isLoggedIn as boolean} />
       <ToastContainer draggable={true} position={"bottom-center"} />
     </>
   );

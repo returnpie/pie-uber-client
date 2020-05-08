@@ -25,7 +25,7 @@ const PhoneLoginContainer: React.FunctionComponent<IProps> = ({ history }) => {
       }});
       if (data && data.StartPhoneVerification && data.StartPhoneVerification.ok) {
         toast.success("Verify!");
-        setTimeout(() => history.push('/verify-phone', targetNumber), 3000);
+        history.push('/verify-phone', targetNumber);
       } else {
         toast.error("Please check phone number");
       }
