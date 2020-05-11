@@ -1,11 +1,11 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import Login from "../../Routes/Login";
-import PhoneLogin from "../../Routes/PhoneLogin";
-import VerifyPhone from "../../Routes/VerifyPhone";
-import SocialLogin from "../../Routes/SocialLogin";
+import Login from "src/Routes/Login";
+import PhoneLogin from "src/Routes/PhoneLogin";
+import VerifyPhone from "src/Routes/VerifyPhone";
+import SocialLogin from "src/Routes/SocialLogin";
 
-const LoggedOutRoutes = () => {
+const LoggedOutRoutes: React.SFC = () => {
   return (
     <Switch>
       <Route path={"/"} exact={true} component={Login} />
