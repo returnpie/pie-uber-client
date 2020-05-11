@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import PhoneLoginPresenter from "./PhoneLoginPresenter";
-import useInput from "../../Hooks/useInput";
+import useInput from "src/Hooks/useInput";
 import { RouteComponentProps } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 import { PHONE_SIGN_IN } from "./PhoneQueries";
 import { toast } from "react-toastify";
 
-interface IProps extends RouteComponentProps {}
-
-const PhoneLoginContainer: React.FunctionComponent<IProps> = ({ history }) => {
+const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
   const phoneNumber = useInput();
   const countryCode = useInput('+82');
   const [loading, setLoading] = useState(false);

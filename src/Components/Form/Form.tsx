@@ -5,11 +5,11 @@ interface IProps {
   className?: string;
 }
 
-const Form: React.FunctionComponent<IProps> = ({ submitFn, className, children }) => (
+const Form: React.SFC<IProps> = ({ submitFn, className, children }) => (
   <form
     className={className}
-    onSubmit={e => {
-      e.preventDefault();
+    onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
       submitFn();
     }}
   >

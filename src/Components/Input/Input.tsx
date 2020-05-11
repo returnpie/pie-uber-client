@@ -32,7 +32,7 @@ interface IProps {
   className?: string;
 }
 
-const Input: React.FunctionComponent<IProps> = ({
+const Input: React.SFC<IProps> = ({
   placeholder = "",
   type = "text",
   required = true,

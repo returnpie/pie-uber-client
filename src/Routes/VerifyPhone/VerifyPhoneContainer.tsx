@@ -1,31 +1,25 @@
-import React, { useEffect, useState } from "react";
-// import { Mutation } from "react-apollo";
+import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 // import { toast } from "react-toastify";
-import { LOG_USER_IN } from "../../sharedQueries.local";
-// import { verifyPhone, verifyPhoneVariables } from "../../types/api";
+import { LOG_USER_IN } from "src/sharedQueries.local";
 import VerifyPhonePresenter from "./VerifyPhonePresenter";
 import { VERIFY_PHONE } from "./VerifyPhoneQueries";
-import useInput from "../../Hooks/useInput";
+import useInput from "src/Hooks/useInput";
 import { useMutation } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
 
-interface IProps extends RouteComponentProps {
-  data: any;
-}
-
-const VerifyPhoneContainer: React.FunctionComponent<IProps> = (props) => {
-  const phoneNumber = props.location.state;
+const VerifyPhoneContainer: React.FC<RouteComponentProps> = ({ history, location }) => {
+  const phoneNumber = location.state;
   const [loading, setLoading] = useState(false);
   const verificationKey = useInput("");
   const [completePhoneVerificationMutation] = useMutation(VERIFY_PHONE);
   const [logUserInMutation] = useMutation(LOG_USER_IN);
 
-  useEffect(() => {
+  // useEffect(() => {
     if (!phoneNumber) {
-      props.history.replace("/");
+      history.replace("/");
     }
-  }, []);
+  // }, []);
 
   const onSubmit = async () => {
     setLoading(true);

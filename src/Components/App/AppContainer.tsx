@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import { IS_LOGGED_IN } from "./AppQueries";
 import AppPresenter from "./AppPresenter";
 
-const AppContainer = (props: any) => {
+const AppContainer: React.SFC = (props: any) => {
   return (
     <>
       <AppPresenter isLoggedIn={props.data.auth.isLoggedIn as boolean} />

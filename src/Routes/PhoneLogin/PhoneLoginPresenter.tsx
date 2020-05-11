@@ -1,8 +1,8 @@
 import React from "react";
 import Helmet from "react-helmet";
-import BackArrow from "../../Components/BackArrow";
-import Input from "../../Components/Input";
-import countries from "../../countries";
+import BackArrow from "src/Components/BackArrow";
+import Input from "src/Components/Input";
+import countries from "src/countries";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -66,7 +66,7 @@ interface IProps {
   loading: boolean; 
 }
 
-const PhoneLoginPresenter: React.FunctionComponent<IProps> = ({
+const PhoneLoginPresenter: React.SFC<IProps> = ({
   countryCode,
   countryCodeOnChange,
   phoneNumber,

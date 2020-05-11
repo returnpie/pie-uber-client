@@ -1,5 +1,5 @@
 import React from "react";
-import bgImage from "../../Images/bg.png";
+import bgImage from "src/Images/bg.png";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Helmet from "react-helmet";
@@ -49,27 +49,21 @@ const PhoneLogin = styled.div`
 `;
 
 const Grey = styled.span`
-  color: ${props => props.theme.greyColor};
+  color: ${(props) => props.theme.greyColor};
   margin-left: 10px;
 `;
 
 const SocialLogin = styled.div`
-  border-top: 1px solid ${props => props.theme.greyColor};
+  border-top: 1px solid ${(props) => props.theme.greyColor};
   padding: 30px 20px;
 `;
 
 const SocialLink = styled.span`
-  color: ${props => props.theme.blueColor};
+  color: ${(props) => props.theme.blueColor};
   font-size: 20px;
 `;
 
-interface IProps {
-  onClickPhoneLogin: () => void;
-  onClickSocialLogin: () => void;
-}
-
-const LoginPresenter: React.FunctionComponent<IProps> = (props: IProps) => {
-  // const { onClickPhoneLogin, onClickSocialLogin } = props;
+const LoginPresenter: React.SFC = () => {
   return (
     <Container>
       <Helmet>
