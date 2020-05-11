@@ -2,16 +2,22 @@ import React from "react";
 import LoggedInRoutes from "../LoggedInRoutes";
 import LoggedOutRoutes from "../LoggedOutRoutes";
 import { BrowserRouter } from "react-router-dom";
+import { UserContextProvider } from "../Context/UserContext";
 
-interface Props {
+interface IProps {
   isLoggedIn: boolean;
 }
 
-const AppPresenter = (props: Props) => {
-  const { isLoggedIn } = props;
+const AppPresenter: React.SFC<IProps> = ({ isLoggedIn }) => {
   return (
     <BrowserRouter>
-      {isLoggedIn ? <LoggedInRoutes /> : <LoggedOutRoutes />}
+      {isLoggedIn ? (
+        <UserContextProvider>
+          <LoggedInRoutes />
+        </UserContextProvider>
+      ) : (
+        <LoggedOutRoutes />
+      )}
     </BrowserRouter>
   );
 };
