@@ -1,7 +1,7 @@
 import React from "react";
 // import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Helmet from "react-helmet";
-import BackArrow from "../../Components/BackArrow";
+import BackArrow from "src/Components/BackArrow";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -14,15 +14,15 @@ const Title = styled.h2`
   margin-bottom: 40px;
 `;
 
-const Link = styled.span`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
+// const Link = styled.span`
+//   display: flex;
+//   align-items: center;
+//   cursor: pointer;
+// `;
 
-const Icon = styled.span`
-  margin-right: 10px;
-`;
+// const Icon = styled.span`
+//   margin-right: 10px;
+// `;
 
 const BackArrowExtended = styled(BackArrow)`
   position: absolute;
@@ -34,12 +34,10 @@ interface IProps {
   // loginCallback: (response) => void;
 }
 
-const SocialLoginPresenter: React.FunctionComponent<IProps> = ({ 
-  // loginCallback
- }) => (
+const SocialLoginPresenter: React.SFC<IProps> = () => (
   <Container>
     <Helmet>
-      <title>Social Login | Nuber</title>
+      <title>Social Login | uber</title>
     </Helmet>
     <Title>Choose an account</Title>
     <BackArrowExtended backTo={"/"} />
