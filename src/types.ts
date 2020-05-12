@@ -6,3 +6,10 @@ export interface User {
   email: string;
   isDriving: boolean;
 }
+
+export interface Place {
+  id: number;
+  name: string;
+  address: string;
+  isFav: boolean;
+}
