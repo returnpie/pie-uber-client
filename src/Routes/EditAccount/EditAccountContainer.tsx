@@ -4,7 +4,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { toast } from "react-toastify";
 import EditAccountPresenter from "./EditAccountPresenter";
 import { UPDATE_PROFILE } from "./EditAccountQueries";
-import { Context } from "src/Components/Context/UserContext";
+import { UserContext } from "src/Components/Context/UserContext";
 import { useMutation } from "@apollo/react-hooks";
 import useInput from "src/Hooks/useInput";
 import { USER_PROFILE } from "src/sharedQueries";
@@ -12,7 +12,7 @@ import { USER_PROFILE } from "src/sharedQueries";
 interface IProps extends RouteComponentProps<any> {}
 
 const EditAccountContainer: React.FC<IProps> = () => {
-  const context = useContext(Context);
+  const context = useContext(UserContext);
   const { email, firstName, lastName, profilePhoto } = context.user;
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);

@@ -19,20 +19,20 @@ const initUser: User = {
   isDriving: false,
 };
 
-const UserContext: UserContext = {
+const context: UserContext = {
   user: initUser,
   setUser: (newUser: User) => {},
 };
 
-export const Context = createContext<UserContext>(UserContext);
+export const UserContext = createContext<UserContext>(context);
 
 export const UserContextProvider: React.FC<IProps> = ({ children }) => {
 
   const [user, setUser] = useState<User>(initUser);
 
   return (
-    <Context.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
-    </Context.Provider>
+    </UserContext.Provider>
   );
 };

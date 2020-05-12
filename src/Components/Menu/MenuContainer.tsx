@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import MenuPresenter from "./MenuPresenter";
-import { Context } from "../Context/UserContext";
+import { UserContext } from "../Context/UserContext";
 import { useMutation } from "@apollo/react-hooks";
 import { TOGGLE_DRIVING } from "./MenuQueries";
 import { User } from "src/types";
 import { toast } from "react-toastify";
 
 const MenuContainer: React.SFC = () => {
-  const { user, setUser } = useContext(Context);
+  const { user, setUser } = useContext(UserContext);
   const [toggleDrivingMutation] = useMutation(TOGGLE_DRIVING);
 
   const onClickToggleDriving = async () => {
