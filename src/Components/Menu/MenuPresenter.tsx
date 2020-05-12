@@ -15,13 +15,13 @@ const Header = styled.div`
   color: white;
 `;
 
-// const SLink = styled(Link)`
-//   font-size: 22px;
-//   display: block;
-//   margin-left: 15px;
-//   margin-bottom: 25px;
-//   font-weight: 400;
-// `;
+const SLink = styled(Link)`
+  font-size: 22px;
+  display: block;
+  margin-left: 15px;
+  margin-bottom: 25px;
+  font-weight: 400;
+`;
 
 const Image = styled.img`
   height: 80px;
@@ -94,11 +94,12 @@ const MenuPresenter: React.SFC<IProps> = ({ user, onClickToggleDriving }) => (
             />
           </Link>
           <Text>
-            <Name>{user.lastName + user.firstName}</Name>
+            <Name>{user.lastName + ' ' + user.firstName}</Name>
             <Rating>4.5</Rating>
           </Text>
         </Grid>
       </Header>
+      <SLink to={'/settings'}>Settings</SLink>
       <ToggleDriving isDriving={user.isDriving} onClick={onClickToggleDriving}>
         {user.isDriving ? "Stop driving" : "Start driving"}
       </ToggleDriving>
