@@ -1,10 +1,10 @@
 import React from "react";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
-import Button from "../../Components/Button";
-import Form from "../../Components/Form";
-import Header from "../../Components/Header";
-import Input from "../../Components/Input";
+import Button from "src/Components/Button";
+import Form from "src/Components/Form";
+import Header from "src/Components/Header";
+import Input from "src/Components/Input";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -22,20 +22,26 @@ const ExtendedLink = styled(Link)`
 `;
 
 interface IProps {
-  address: string;
   name: string;
+  address: string;
+  onChangeInput: {
+    name: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    address: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  };
   // onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  // loading: boolean;
+  loading: boolean;
+  onSubmitAddPlace: () => void;
   // onSubmit: MutationFn;
   // pickedAddress: boolean;
 }
 
 const AddPlacePresenter: React.SFC<IProps> = ({
   // onInputChange,
-  address,
   name,
-  // loading,
-  // onSubmit,
+  address,
+  onChangeInput,
+  loading,
+  onSubmitAddPlace,
   // pickedAddress
 }) => (
   <React.Fragment>
@@ -44,28 +50,29 @@ const AddPlacePresenter: React.SFC<IProps> = ({
     </Helmet>
     <Header title={"Add Place"} backTo={"/"} />
     <Container>
-      <Form submitFn={undefined}>
+      <Form submitFn={onSubmitAddPlace}>
         <ExtendedInput
           placeholder={"Name"}
           type={"text"}
-          onChange={undefined}
+          onChange={onChangeInput.name}
           value={name}
           name={"name"}
         />
         <ExtendedInput
           placeholder={"Address"}
           type={"text"}
-          onChange={undefined}
+          onChange={onChangeInput.address}
           value={address}
           name={"address"}
         />
         <ExtendedLink to={"/find-address"}>Pick place from map</ExtendedLink>
-        {/* {pickedAddress && (
-          <Button
-            onClick={null}
-            value={loading ? "Adding place" : "Add Place"}
-          />
-        )} */}
+        {/* {pickedAddress && ( */}
+        <Button
+          onClick={null}
+          disabled={loading}
+          value={loading ? "Adding place" : "Add Place"}
+        />
+        {/* )} */}
       </Form>
     </Container>
   </React.Fragment>
