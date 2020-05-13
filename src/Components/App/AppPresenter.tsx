@@ -3,6 +3,7 @@ import LoggedInRoutes from "../LoggedInRoutes";
 import LoggedOutRoutes from "../LoggedOutRoutes";
 import { BrowserRouter } from "react-router-dom";
 import { UserContextProvider } from "../Context/UserContext";
+import { PlaceContextProvider } from "../Context/PlaceContext";
 
 interface IProps {
   isLoggedIn: boolean;
@@ -13,7 +14,9 @@ const AppPresenter: React.SFC<IProps> = ({ isLoggedIn }) => {
     <BrowserRouter>
       {isLoggedIn ? (
         <UserContextProvider>
-          <LoggedInRoutes />
+          <PlaceContextProvider>
+            <LoggedInRoutes />
+          </PlaceContextProvider>
         </UserContextProvider>
       ) : (
         <LoggedOutRoutes />
