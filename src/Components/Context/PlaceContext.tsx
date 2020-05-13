@@ -10,12 +10,7 @@ interface IProps {
   children: JSX.Element;
 }
 
-const initPlaces: Place[] = [{
-  id: 0,
-  name: 'default name',
-  address: 'default address',
-  isFav: false
-}];
+const initPlaces: Place[] = [];
 
 const context: PlaceContext = {
   places: initPlaces,
