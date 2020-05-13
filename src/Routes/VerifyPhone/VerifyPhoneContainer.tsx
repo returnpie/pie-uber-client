@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 const VerifyPhoneContainer: React.FC<RouteComponentProps> = ({ history, location }) => {
   const phoneNumber = location.state;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const verificationKey = useInput("");
   const [completePhoneVerificationMutation] = useMutation(VERIFY_PHONE);
   const [logUserInMutation] = useMutation(LOG_USER_IN);

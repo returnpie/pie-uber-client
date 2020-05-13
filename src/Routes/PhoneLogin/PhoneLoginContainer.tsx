@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
   const phoneNumber = useInput();
   const countryCode = useInput('+82');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [phoneSigninMutation] = useMutation(PHONE_SIGN_IN);
 

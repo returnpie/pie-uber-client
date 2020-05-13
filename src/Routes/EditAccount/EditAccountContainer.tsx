@@ -14,13 +14,13 @@ interface IProps extends RouteComponentProps<any> {}
 const EditAccountContainer: React.FC<IProps> = () => {
   const context = useContext(UserContext);
   const { email, firstName, lastName, profilePhoto } = context.user;
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [uploading, setUploading] = useState<boolean>(false);
 
   const newEmail = useInput(email);
   const newFirstName = useInput(firstName);
   const newLastName = useInput(lastName);
-  const [newProfilePhoto, setNewProfilePhoto] = useState(profilePhoto);
+  const [newProfilePhoto, setNewProfilePhoto] = useState<string>(profilePhoto);
 
   const [updateProfileMutation] = useMutation(UPDATE_PROFILE);
 

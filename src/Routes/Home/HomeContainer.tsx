@@ -5,7 +5,7 @@ import HomePresenter from "./HomePresenter";
 interface IProps extends RouteComponentProps<any> {}
 
 const HomeContainer: React.FC<IProps> = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const onSetOpen = () => {
     setIsMenuOpen(!isMenuOpen);
   };
