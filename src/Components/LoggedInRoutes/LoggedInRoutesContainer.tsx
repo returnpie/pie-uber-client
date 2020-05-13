@@ -7,7 +7,6 @@ import { USER_PROFILE, GET_PLACES } from "src/sharedQueries";
 import { User, Place } from "src/types";
 
 const LoggedInRoutesContainer: React.SFC = () => {
-  
   const userContext = useContext(UserContext);
   const placeContext = useContext(PlaceContext);
   const userData = useQuery(USER_PROFILE).data;
@@ -27,7 +26,7 @@ const LoggedInRoutesContainer: React.SFC = () => {
     }
   }, [placeData]);
 
-  return <LoggedInRoutesPresenter isLoading={userData} />;
+  return <LoggedInRoutesPresenter isLoading={userData && placeData} />;
 };
 
 export default LoggedInRoutesContainer;
