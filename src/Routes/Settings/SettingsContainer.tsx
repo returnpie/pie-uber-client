@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { LOG_USER_OUT } from "../../sharedQueries.local";
+import { LOG_USER_OUT } from "src/sharedQueries.local";
 import SettingsPresenter from "./SettingsPresenter";
 import { UserContext } from "src/Components/Context/UserContext";
 import { useMutation } from "@apollo/react-hooks";

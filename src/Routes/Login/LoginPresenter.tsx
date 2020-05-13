@@ -71,7 +71,7 @@ const LoginPresenter: React.SFC = () => {
       </Helmet>
       <Header>
         <Logo>
-          <Title>PIE-uber</Title>
+          <Title>PIE-UBER</Title>
         </Logo>
       </Header>
       <Footer>

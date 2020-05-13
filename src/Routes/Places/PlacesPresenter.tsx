@@ -8,9 +8,13 @@ import { Place } from "src/types";
 
 const Container = styled.div`
   padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+
 `;
 
 const SLink = styled(Link)`
+  margin: 40px 0;
   text-decoration: underline;
 `;
 
@@ -21,7 +25,7 @@ interface IProps {
 const PlacesPresenter: React.SFC<IProps> = ({ places }) => (
   <React.Fragment>
     <Helmet>
-      <title>Places | Number</title>
+      <title>Places | uber</title>
     </Helmet>
     <Header title={"Places"} backTo={"/"} />
     <Container>
