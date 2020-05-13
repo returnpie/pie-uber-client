@@ -31,17 +31,17 @@ interface IProps {
   name: string;
   address: string;
   isFav: boolean;
-  // onStarPress: MutationFn;
+  onClickEditPlace: () => void;
 }
 
 const PlaceTagPresenter: React.SFC<IProps> = ({
-  // onStarPress,
   name,
   address,
   isFav,
+  onClickEditPlace
 }) => (
   <Place>
-    <Icon onClick={undefined}>{isFav ? "★" : "✩"}</Icon>
+    <Icon onClick={onClickEditPlace}>{isFav ? "★" : "✩"}</Icon>
     <Container>
       <Name>{name}</Name>
       <Address>{address}</Address>
