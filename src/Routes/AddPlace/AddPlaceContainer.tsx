@@ -10,8 +10,8 @@ import { useMutation } from "@apollo/react-hooks";
 const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
   const name = useInput();
   const address = useInput();
-  const [lat, setLat] = useState<number>();
-  const [lng, setLng] = useState<number>();
+  const [lat, setLat] = useState<number>(0);
+  const [lng, setLng] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
   const [addPlaceMutation] = useMutation(ADD_PLACE);
@@ -27,8 +27,8 @@ const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
       variables: {
         name: name.value,
         address: address.value,
-        lat: 1.34,
-        lng: 1.34,
+        lat: 0,
+        lng: 0,
         isFav: false,
       },
       refetchQueries: [{ query: GET_PLACES }],
@@ -42,6 +42,8 @@ const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
     setLoading(false);
   };
 
+  const pickedAddress: boolean = Boolean(lat && lng);
+
   return (
     <AddPlacePresenter
       // onInputChange={this.onInputChange}
@@ -51,7 +53,7 @@ const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
       loading={loading}
       onSubmitAddPlace={onSubmitAddPlace}
       // onSubmit={addPlaceFn}
-      // pickedAddress={lat !== 0 && lng !== 0}
+      pickedAddress={pickedAddress}
     />
   );
 };
