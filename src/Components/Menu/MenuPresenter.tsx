@@ -99,6 +99,7 @@ const MenuPresenter: React.SFC<IProps> = ({ user, onClickToggleDriving }) => (
           </Text>
         </Grid>
       </Header>
+      <SLink to={'/edit-account'}>Your Profile</SLink>
       <SLink to={'/settings'}>Settings</SLink>
       <ToggleDriving isDriving={user.isDriving} onClick={onClickToggleDriving}>
         {user.isDriving ? "Stop driving" : "Start driving"}
