@@ -39,7 +39,6 @@ const VerifyPhonePresenter: React.SFC<IProps> = ({
         value={verificationKey}
         placeholder={"Enter Verification Code"}
         onChange={onChange}
-        name={"verificationKey"}
       />
       <Button
         disabled={loading}

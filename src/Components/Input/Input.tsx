@@ -37,14 +37,12 @@ const Input: React.SFC<IProps> = ({
   type = "text",
   required = true,
   value,
-  name = "",
   onChange,
   className
 }) => (
   <Container
     className={className}
     onChange={onChange}
-    name={name}
     type={type}
     required={required}
     value={value}
