@@ -1,11 +1,7 @@
 import axios from "axios";
 import { MAPS_KEY } from "./keys";
 import { toast } from "react-toastify";
-
-interface Position {
-  lat: number;
-  lng: number;
-}
+import { Position } from "./types";
 
 export const geoCode = () => {};
 
@@ -19,5 +15,6 @@ export const reverseGeoCode = async ({ lat, lng }: Position) => {
     return address;
   } else {
     toast.error(data.error_message);
+    return undefined;
   }
 };

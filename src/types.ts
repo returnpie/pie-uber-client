@@ -13,3 +13,8 @@ export interface Place {
   address: string;
   isFav: boolean;
 }
+
+export interface Position {
+  lat: number;
+  lng: number;
+}

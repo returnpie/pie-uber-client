@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import useInput from "src/Hooks/useInput";
 import { reverseGeoCode } from "src/mapHelpers";
 
+
 interface IProps {
   google: GoogleAPI;
 }
@@ -15,8 +16,8 @@ interface IProps {
 const FindAddressContainer: React.FC<IProps> = ({ google }) => {
   const mapRef = useRef<HTMLDivElement>();
 
-//   const [lat, setLat] = useState<number>(37.289285);
-//   const [lng, setLng] = useState<number>(127.045366);
+  //   const [lat, setLat] = useState<number>(37.289285);
+  //   const [lng, setLng] = useState<number>(127.045366);
   const address = useInput();
 
   const handleGeoSuccess = (position: Position) => {
@@ -38,7 +39,9 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
       lng,
     };
     const reversedAddress = await reverseGeoCode(center);
-    address.setValue(reversedAddress);
+    if (reversedAddress) {
+      address.setValue(reversedAddress);
+    }
     const mapConfig: google.maps.MapOptions = {
       zoom: 15,
       center,
@@ -58,7 +61,9 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
           lng: newCenter.lng(),
         };
         const reversedAddress = await reverseGeoCode(position);
-        address.setValue(reversedAddress);
+        if (reversedAddress) {
+          address.setValue(reversedAddress);
+        }
       };
       map.addListener("drag", handleDrag);
       map.addListener("dragend", getAddress);
