@@ -14,7 +14,7 @@ export interface Place {
   isFav: boolean;
 }
 
-export interface Position {
+export interface Location {
   lat: number;
   lng: number;
 }
