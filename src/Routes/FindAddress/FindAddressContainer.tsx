@@ -4,8 +4,8 @@ import { GoogleAPI } from "google-maps-react";
 import ReactDOM from "react-dom";
 import { toast } from "react-toastify";
 import useInput from "src/Hooks/useInput";
-import { reverseGeoCode } from "src/mapHelpers";
-
+import { reverseGeoCode, geoCode } from "src/mapHelpers";
+import { Location } from "src/types";
 
 interface IProps {
   google: GoogleAPI;
@@ -16,9 +16,29 @@ interface IProps {
 const FindAddressContainer: React.FC<IProps> = ({ google }) => {
   const mapRef = useRef<HTMLDivElement>();
 
+  const [map, setMap] = useState<google.maps.Map>();
+  const [latLng, setlatLng] = useState<Location>({ lat: 0, lng: 0 });
+
   //   const [lat, setLat] = useState<number>(37.289285);
   //   const [lng, setLng] = useState<number>(127.045366);
   const address = useInput();
+
+  const onKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      event.currentTarget.blur();
+    }
+  };
+
+  const onBlur = async () => {
+    const result = await geoCode(address.value);
+    if (result) {
+      setlatLng(result.location);
+      address.setValue(result.formatted_address);
+      if (map) {
+        map.panTo(result.location);
+      }
+    }
+  };
 
   const handleGeoSuccess = (position: Position) => {
     const {
@@ -67,6 +87,7 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
       };
       map.addListener("drag", handleDrag);
       map.addListener("dragend", getAddress);
+      setMap(map);
     }
   };
 
@@ -78,6 +99,8 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
     <FindAddressPresenter
       address={address.value}
       onChangeInput={address.onChange}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
       mapRef={mapRef}
     />
   );

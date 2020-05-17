@@ -14,12 +14,16 @@ const Map = styled.div`
 interface IProps {
   address: string;
   onChangeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBlur: () => void;
   mapRef: any;
 }
 
 const FindAddressPresenter: React.SFC<IProps> = ({
   address,
   onChangeInput,
+  onKeyDown,
+  onBlur,
   mapRef,
 }) => {
   return (
@@ -30,7 +34,8 @@ const FindAddressPresenter: React.SFC<IProps> = ({
       <AddressBar
         value={address}
         onChange={onChangeInput}
-        onBlur={undefined}
+        onKeyDown={onKeyDown}
+        onBlur={onBlur}
       />
       <Map ref={mapRef} />
     </div>

@@ -22,15 +22,22 @@ const Container = styled.input`
 interface IProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur: any;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBlur: () => void;
 }
 
-const AddressBar: React.SFC<IProps> = ({ value, onBlur, onChange }) => (
+const AddressBar: React.SFC<IProps> = ({
+  value,
+  onChange,
+  onKeyDown,
+  onBlur,
+}) => (
   <Container
     value={value}
     onBlur={onBlur}
     onSubmit={onBlur}
     onChange={onChange}
+    onKeyDown={onKeyDown}
     placeholder={"Type address"}
   />
 );
