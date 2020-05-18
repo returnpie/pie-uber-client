@@ -6,14 +6,15 @@ import { toast } from "react-toastify";
 import useInput from "src/Hooks/useInput";
 import { reverseGeoCode, geoCode } from "src/mapHelpers";
 import { Location } from "src/types";
+import { RouteComponentProps } from "react-router-dom";
 
-interface IProps {
+interface IProps extends RouteComponentProps {
   google: GoogleAPI;
 }
 
 //37.289285 127.045366
 
-const FindAddressContainer: React.FC<IProps> = ({ google }) => {
+const FindAddressContainer: React.FC<IProps> = ({ google, history }) => {
   const mapRef = useRef<HTMLDivElement>();
 
   const [map, setMap] = useState<google.maps.Map>();
@@ -38,6 +39,10 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
         map.panTo(result.location);
       }
     }
+  };
+
+  const onClickButton = () => {
+    history.push("/add-place", { latLng, address: address.value });
   };
 
   const handleGeoSuccess = (position: Position) => {
@@ -101,6 +106,7 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
       onChangeInput={address.onChange}
       onKeyDown={onKeyDown}
       onBlur={onBlur}
+      onClickButton={onClickButton}
       mapRef={mapRef}
     />
   );

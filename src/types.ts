@@ -18,3 +18,11 @@ export interface Location {
   lat: number;
   lng: number;
 }
+
+export interface AddPlaceState {
+  latLng: {
+    lat: number;
+    lng: number;
+  };
+  address: string;
+}

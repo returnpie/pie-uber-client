@@ -2,6 +2,18 @@ import React from "react";
 import Helmet from "react-helmet";
 import styled from "styled-components";
 import AddressBar from "src/Components/AddressBar";
+import Button from "src/Components/Button";
+
+const ExtendedButton = styled(Button)`
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 10;
+  height: auto;
+  width: 80%;
+`;
 
 const Map = styled.div`
   position: absolute;
@@ -16,6 +28,7 @@ interface IProps {
   onChangeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur: () => void;
+  onClickButton: () => void;
   mapRef: any;
 }
 
@@ -24,6 +37,7 @@ const FindAddressPresenter: React.SFC<IProps> = ({
   onChangeInput,
   onKeyDown,
   onBlur,
+  onClickButton,
   mapRef,
 }) => {
   return (
@@ -37,6 +51,7 @@ const FindAddressPresenter: React.SFC<IProps> = ({
         onKeyDown={onKeyDown}
         onBlur={onBlur}
       />
+      <ExtendedButton value={"Pick this place"} onClick={onClickButton} />
       <Map ref={mapRef} />
     </div>
   );
