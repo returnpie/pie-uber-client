@@ -7,27 +7,29 @@ import Menu from "src/Components/Menu";
 
 const Container = styled.div``;
 
-// const MenuButton = styled.button`
-//   appearance: none;
-//   padding: 10px;
-//   position: absolute;
-//   top: 10px;
-//   left: 10px;
-//   text-align: center;
-//   font-weight: 800;
-//   border: 0;
-//   cursor: pointer;
-//   font-size: 20px;
-//   transform: rotate(90deg);
-//   z-index: 2;
-//   background-color: transparent;
-// `;
+const Map = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+`;
 
-// const Map = styled.div`
-//   position: absolute;
-//   height: 100%;
-//   width: 100%;
-// `;
+const MenuButton = styled.button`
+  appearance: none;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  text-align: center;
+  font-weight: 800;
+  border: 0;
+  cursor: pointer;
+  font-size: 20px;
+  transform: rotate(90deg);
+  z-index: 2;
+  background-color: transparent;
+`;
 
 // const ExtendedButton = styled(Button)`
 //   position: absolute;
@@ -47,9 +49,14 @@ const Container = styled.div``;
 interface IProps {
   isMenuOpen: boolean;
   onSetOpen: () => void;
+  mapRef: any;
 }
 
-const HomePresenter: React.SFC<IProps> = ({ isMenuOpen, onSetOpen }) => (
+const HomePresenter: React.SFC<IProps> = ({
+  isMenuOpen,
+  onSetOpen,
+  mapRef,
+}) => (
   <Container>
     <Helmet>
       <title>Home | uber</title>
@@ -59,11 +66,12 @@ const HomePresenter: React.SFC<IProps> = ({ isMenuOpen, onSetOpen }) => (
       open={isMenuOpen}
       onSetOpen={onSetOpen}
       styles={{
-        sidebar: { width: "80%", backgroundColor: "white", zIndex: "10" }
+        sidebar: { width: "80%", backgroundColor: "white", zIndex: "10" },
       }}
     >
-      <button onClick={onSetOpen}>open sidebar</button>
+      <MenuButton onClick={onSetOpen}>|||</MenuButton>
     </Sidebar>
+    <Map ref={mapRef} />
   </Container>
 );
 
