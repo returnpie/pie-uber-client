@@ -2,8 +2,8 @@ import React from "react";
 import LoggedInRoutes from "../LoggedInRoutes";
 import LoggedOutRoutes from "../LoggedOutRoutes";
 import { BrowserRouter } from "react-router-dom";
-import { UserContextProvider } from "../Context/UserContext";
-import { PlaceContextProvider } from "../Context/PlaceContext";
+import { UserContextProvider } from "src/Context/UserContext";
+import { PlaceContextProvider } from "src/Context/PlaceContext";
 
 interface IProps {
   isLoggedIn: boolean;

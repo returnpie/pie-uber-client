@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import LoggedInRoutesPresenter from "./LoggedInRoutesPresenter";
-import { UserContext } from "../Context/UserContext";
-import { PlaceContext } from "../Context/PlaceContext";
+import { UserContext } from "src/Context/UserContext";
+import { PlaceContext } from "src/Context/PlaceContext";
 import { useQuery } from "@apollo/react-hooks";
 import { USER_PROFILE, GET_PLACES } from "src/sharedQueries";
 import { User, Place } from "src/types";

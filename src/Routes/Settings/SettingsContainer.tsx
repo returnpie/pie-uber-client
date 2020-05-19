@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { LOG_USER_OUT } from "src/sharedQueries.local";
 import SettingsPresenter from "./SettingsPresenter";
-import { UserContext } from "src/Components/Context/UserContext";
+import { UserContext } from "src/Context/UserContext";
 import { useMutation } from "@apollo/react-hooks";
 import { RouteComponentProps } from "react-router-dom";
-import { PlaceContext } from "src/Components/Context/PlaceContext";
+import { PlaceContext } from "src/Context/PlaceContext";
 
 const SettingsContainer: React.FC<RouteComponentProps> = ({ history }) => {
   const { user } = useContext(UserContext);

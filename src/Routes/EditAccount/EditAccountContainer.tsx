@@ -4,7 +4,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { toast } from "react-toastify";
 import EditAccountPresenter from "./EditAccountPresenter";
 import { UPDATE_PROFILE } from "./EditAccountQueries";
-import { UserContext } from "src/Components/Context/UserContext";
+import { UserContext } from "src/Context/UserContext";
 import { useMutation } from "@apollo/react-hooks";
 import useInput from "src/Hooks/useInput";
 import { USER_PROFILE } from "src/sharedQueries";

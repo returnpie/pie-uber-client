@@ -45,14 +45,14 @@ const FindAddressContainer: React.FC<IProps> = ({ google, history }) => {
     history.push("/add-place", { latLng, address: address.value });
   };
 
-  const handleGeoSuccess = (position: Position) => {
+  const handleGeoSuccess: PositionCallback = (position: Position) => {
     const {
       coords: { latitude, longitude },
     } = position;
     loadMap(latitude, longitude);
   };
 
-  const handleGeoError = () => {
+  const handleGeoError: PositionErrorCallback = () => {
     toast.error("can't find you..");
   };
 

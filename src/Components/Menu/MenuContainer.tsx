@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import MenuPresenter from "./MenuPresenter";
-import { UserContext } from "../Context/UserContext";
+import { UserContext } from "src/Context/UserContext";
 import { useMutation } from "@apollo/react-hooks";
 import { TOGGLE_DRIVING } from "./MenuQueries";
 import { User } from "src/types";
