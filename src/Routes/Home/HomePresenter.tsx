@@ -4,6 +4,8 @@ import Helmet from "react-helmet";
 import styled from "styled-components";
 import Sidebar from "react-sidebar";
 import Menu from "src/Components/Menu";
+import AddressBar from "src/Components/AddressBar";
+import Button from "src/Components/Button";
 
 const Container = styled.div``;
 
@@ -31,16 +33,16 @@ const MenuButton = styled.button`
   background-color: transparent;
 `;
 
-// const ExtendedButton = styled(Button)`
-//   position: absolute;
-//   bottom: 50px;
-//   left: 0;
-//   right: 0;
-//   margin: auto;
-//   z-index: 10;
-//   height: auto;
-//   width: 80%;
-// `;
+const ExtendedButton = styled(Button)`
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 10;
+  height: auto;
+  width: 80%;
+`;
 
 // const RequestButton = styled(ExtendedButton)`
 //   bottom: 250px;
@@ -49,12 +51,22 @@ const MenuButton = styled.button`
 interface IProps {
   isMenuOpen: boolean;
   onSetOpen: () => void;
+  address: string;
+  onChangeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBlur: () => void;
+  onClickButton: () => void;
   mapRef: any;
 }
 
 const HomePresenter: React.SFC<IProps> = ({
   isMenuOpen,
   onSetOpen,
+  address,
+  onChangeInput,
+  onKeyDown,
+  onBlur,
+  onClickButton,
   mapRef,
 }) => (
   <Container>
@@ -71,6 +83,13 @@ const HomePresenter: React.SFC<IProps> = ({
     >
       <MenuButton onClick={onSetOpen}>|||</MenuButton>
     </Sidebar>
+    <AddressBar
+      value={address}
+      onChange={onChangeInput}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
+    />
+    <ExtendedButton value={"Pick this place"} onClick={onClickButton} />
     <Map ref={mapRef} />
   </Container>
 );

@@ -4,6 +4,9 @@ import HomePresenter from "./HomePresenter";
 import { GoogleAPI } from "google-maps-react";
 import ReactDOM from "react-dom";
 import { toast } from "react-toastify";
+import { Location } from "src/types";
+import useInput from "src/Hooks/useInput";
+import { geoCode } from "src/mapHelpers";
 
 interface IProps extends RouteComponentProps {
   google: GoogleAPI;
@@ -13,6 +16,8 @@ const HomeContainer: React.FC<IProps> = () => {
   const mapRef = useRef<HTMLDivElement>();
   const maps = google.maps;
   const [map, setMap] = useState<google.maps.Map>();
+  const [toLatLng, setToLatLng] = useState<Location>({ lat: 0, lng: 0 });
+  const address = useInput();
   const marker = new maps.Marker({
     icon: {
       path: maps.SymbolPath.CIRCLE,
@@ -23,6 +28,23 @@ const HomeContainer: React.FC<IProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const onSetOpen = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const onKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      event.currentTarget.blur();
+    }
+  };
+
+  const onBlur = async () => {
+    const result = await geoCode(address.value);
+    if (result) {
+      setToLatLng(result.location);
+      address.setValue(result.formatted_address);
+      if (map) {
+        map.panTo(result.location);
+      }
+    }
   };
 
   const handleGeoSuccess: PositionCallback = (position: Position) => {
@@ -49,6 +71,8 @@ const HomeContainer: React.FC<IProps> = () => {
   const handleGeoWatchError = () => {
     toast.error("can't watching you..");
   };
+
+  const onClickButton = () => {};
 
   const loadMap = async (lat: number, lng: number) => {
     const mapNode = ReactDOM.findDOMNode(mapRef.current) as Element;
@@ -88,6 +112,11 @@ const HomeContainer: React.FC<IProps> = () => {
     <HomePresenter
       isMenuOpen={isMenuOpen}
       onSetOpen={onSetOpen}
+      address={address.value}
+      onChangeInput={address.onChange}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
+      onClickButton={onClickButton}
       mapRef={mapRef}
     />
   );
