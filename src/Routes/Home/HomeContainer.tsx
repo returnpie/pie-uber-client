@@ -16,14 +16,19 @@ const HomeContainer: React.FC<IProps> = () => {
   const mapRef = useRef<HTMLDivElement>();
   const maps = google.maps;
   const [map, setMap] = useState<google.maps.Map>();
+  const [latLng, setLatLng] = useState<Location>({ lat: 0, lng: 0 });
   const [toLatLng, setToLatLng] = useState<Location>({ lat: 0, lng: 0 });
   const address = useInput();
-  const marker = new maps.Marker({
-    icon: {
-      path: maps.SymbolPath.CIRCLE,
-      scale: 7,
-    },
-  });
+  const [marker, setMarKer] = useState<google.maps.Marker | undefined>(
+    undefined
+  );
+  const [toMarker, setToMarKer] = useState<google.maps.Marker | undefined>(
+    undefined
+  );
+
+  const [directions, setDirections] = useState<
+    google.maps.DirectionsRenderer | undefined
+  >(undefined);
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const onSetOpen = () => {
@@ -41,17 +46,15 @@ const HomeContainer: React.FC<IProps> = () => {
     if (result) {
       setToLatLng(result.location);
       address.setValue(result.formatted_address);
-      if (map) {
-        map.panTo(result.location);
-      }
     }
   };
 
   const handleGeoSuccess: PositionCallback = (position: Position) => {
     const {
-      coords: { latitude, longitude },
+      coords: { latitude: lat, longitude: lng },
     } = position;
-    loadMap(latitude, longitude);
+    setLatLng({ lat, lng });
+    loadMap(lat, lng);
   };
 
   const handleGeoError: PositionErrorCallback = () => {
@@ -64,15 +67,62 @@ const HomeContainer: React.FC<IProps> = () => {
     } = position;
     if (map) {
       map.panTo({ lat, lng });
+      setLatLng({ lat, lng });
+      if (marker) {
+        marker.setPosition({ lat, lng });
+      }
     }
-    marker.setPosition({ lat, lng });
   };
 
   const handleGeoWatchError = () => {
     toast.error("can't watching you..");
   };
 
-  const onClickButton = () => {};
+  const onClickButton = () => {
+    if (map) {
+      if (toMarker) {
+        toMarker.setMap(null);
+      }
+      const newMarker = new maps.Marker({ position: toLatLng, map });
+      setToMarKer(newMarker);
+      const bounds = new maps.LatLngBounds();
+      bounds.extend(latLng);
+      bounds.extend(toLatLng);
+      map.fitBounds(bounds);
+      if (directions) {
+        directions.setMap(null);
+      }
+      const rendererOptions: google.maps.DirectionsRendererOptions = {
+        suppressMarkers: true,
+        polylineOptions: {
+          strokeColor: "#000",
+        },
+      };
+      const newDirections = new google.maps.DirectionsRenderer(rendererOptions);
+      setDirections(newDirections);
+      const directionService: google.maps.DirectionsService = new google.maps.DirectionsService();
+      const destination = new google.maps.LatLng(toLatLng);
+      const origin = new google.maps.LatLng(latLng);
+      const directionsOptions: google.maps.DirectionsRequest = {
+        destination,
+        origin,
+        travelMode: google.maps.TravelMode.TRANSIT,
+      };
+      directionService.route(directionsOptions, (result, status) => {
+        console.log(result, status);
+        if (status === google.maps.DirectionsStatus.OK) {
+          const { routes } = result;
+          console.log(routes);
+          // const {
+          //   distance: { text: distance },
+          //   duration: { text: duration },
+          // } = routes[0];
+        } else {
+          toast.error("There is no route there..");
+        }
+      });
+    }
+  };
 
   const loadMap = async (lat: number, lng: number) => {
     const mapNode = ReactDOM.findDOMNode(mapRef.current) as Element;
@@ -87,8 +137,15 @@ const HomeContainer: React.FC<IProps> = () => {
     };
     if (mapNode) {
       const map = new maps.Map(mapNode, mapConfig);
-      marker.setMap(map);
-      marker.setPosition(center);
+      const newMarker = new google.maps.Marker({
+        icon: {
+          path: maps.SymbolPath.CIRCLE,
+          scale: 7,
+        },
+        position: center,
+        map,
+      });
+      setMarKer(newMarker);
       setMap(map);
     }
   };
@@ -98,6 +155,7 @@ const HomeContainer: React.FC<IProps> = () => {
   }, []);
 
   useEffect(() => {
+    console.log("watch");
     const watchOptions: PositionOptions = {
       enableHighAccuracy: true,
     };
