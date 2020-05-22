@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { Location } from "src/types";
 import useInput from "src/Hooks/useInput";
 import { geoCode } from "src/mapHelpers";
+import { useMutation } from "@apollo/react-hooks";
+import { REPORT_LOCATION } from "./HomeQueries";
 
 interface IProps extends RouteComponentProps {
   google: GoogleAPI;
@@ -18,6 +20,9 @@ const HomeContainer: React.FC<IProps> = () => {
   const [map, setMap] = useState<google.maps.Map>();
   const [latLng, setLatLng] = useState<Location>({ lat: 0, lng: 0 });
   const [toLatLng, setToLatLng] = useState<Location>({ lat: 0, lng: 0 });
+  const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
+  const [price, setPrice] = useState("");
   const address = useInput();
   const [marker, setMarKer] = useState<google.maps.Marker | undefined>(
     undefined
@@ -25,12 +30,12 @@ const HomeContainer: React.FC<IProps> = () => {
   const [toMarker, setToMarKer] = useState<google.maps.Marker | undefined>(
     undefined
   );
-
   const [directions, setDirections] = useState<
     google.maps.DirectionsRenderer | undefined
   >(undefined);
-
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [reportLocationMutation] = useMutation(REPORT_LOCATION);
+
   const onSetOpen = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -61,11 +66,17 @@ const HomeContainer: React.FC<IProps> = () => {
     toast.error("can't find you..");
   };
 
-  const handleGeoWatchSuccess = (position: Position) => {
+  const handleGeoWatchSuccess = async (position: Position) => {
     const {
       coords: { latitude: lat, longitude: lng },
     } = position;
     if (map) {
+      await reportLocationMutation({
+        variables: {
+          lat,
+          lng,
+        },
+      });
       map.panTo({ lat, lng });
       setLatLng({ lat, lng });
       if (marker) {
@@ -99,7 +110,6 @@ const HomeContainer: React.FC<IProps> = () => {
         },
       };
       const newDirections = new google.maps.DirectionsRenderer(rendererOptions);
-      setDirections(newDirections);
       const directionService: google.maps.DirectionsService = new google.maps.DirectionsService();
       const destination = new google.maps.LatLng(toLatLng);
       const origin = new google.maps.LatLng(latLng);
@@ -112,11 +122,20 @@ const HomeContainer: React.FC<IProps> = () => {
         console.log(result, status);
         if (status === google.maps.DirectionsStatus.OK) {
           const { routes } = result;
-          console.log(routes);
-          // const {
-          //   distance: { text: distance },
-          //   duration: { text: duration },
-          // } = routes[0];
+          const { legs } = routes[0];
+          const {
+            distance: { text: distance, value: price },
+            duration: { text: duration },
+          } = legs[0];
+          if (directions) {
+            directions.setMap(null);
+          }
+          newDirections.setDirections(result);
+          newDirections.setMap(map);
+          setDirections(newDirections);
+          setDistance(distance);
+          setDuration(duration);
+          setPrice(price.toLocaleString());
         } else {
           toast.error("There is no route there..");
         }
@@ -175,6 +194,7 @@ const HomeContainer: React.FC<IProps> = () => {
       onKeyDown={onKeyDown}
       onBlur={onBlur}
       onClickButton={onClickButton}
+      price={price}
       mapRef={mapRef}
     />
   );

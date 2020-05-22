@@ -44,9 +44,9 @@ const ExtendedButton = styled(Button)`
   width: 80%;
 `;
 
-// const RequestButton = styled(ExtendedButton)`
-//   bottom: 250px;
-// `;
+const RequestButton = styled(ExtendedButton)`
+  bottom: 150px;
+`;
 
 interface IProps {
   isMenuOpen: boolean;
@@ -56,6 +56,7 @@ interface IProps {
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur: () => void;
   onClickButton: () => void;
+  price: string;
   mapRef: any;
 }
 
@@ -67,6 +68,7 @@ const HomePresenter: React.SFC<IProps> = ({
   onKeyDown,
   onBlur,
   onClickButton,
+  price,
   mapRef,
 }) => (
   <Container>
@@ -89,7 +91,16 @@ const HomePresenter: React.SFC<IProps> = ({
       onKeyDown={onKeyDown}
       onBlur={onBlur}
     />
-    <ExtendedButton value={"Pick this place"} onClick={onClickButton} />
+    {price && (
+      <RequestButton
+        value={`Request Ride (￦ ${price})`}
+        onClick={onClickButton}
+      />
+    )}
+    <ExtendedButton
+      value={price ? "Change address" : "Pick this place"}
+      onClick={onClickButton}
+    />
     <Map ref={mapRef} />
   </Container>
 );
