@@ -6,6 +6,7 @@ import Sidebar from "react-sidebar";
 import Menu from "src/Components/Menu";
 import AddressBar from "src/Components/AddressBar";
 import Button from "src/Components/Button";
+import { User } from "src/types";
 
 const Container = styled.div``;
 
@@ -49,6 +50,7 @@ const RequestButton = styled(ExtendedButton)`
 `;
 
 interface IProps {
+  user: User;
   isMenuOpen: boolean;
   onSetOpen: () => void;
   address: string;
@@ -61,6 +63,7 @@ interface IProps {
 }
 
 const HomePresenter: React.SFC<IProps> = ({
+  user,
   isMenuOpen,
   onSetOpen,
   address,
@@ -85,22 +88,27 @@ const HomePresenter: React.SFC<IProps> = ({
     >
       <MenuButton onClick={onSetOpen}>|||</MenuButton>
     </Sidebar>
-    <AddressBar
-      value={address}
-      onChange={onChangeInput}
-      onKeyDown={onKeyDown}
-      onBlur={onBlur}
-    />
+    {!user.isDriving && (
+      <>
+        <AddressBar
+          value={address}
+          onChange={onChangeInput}
+          onKeyDown={onKeyDown}
+          onBlur={onBlur}
+        />
+        <ExtendedButton
+          value={price ? "Change address" : "Pick this place"}
+          onClick={onClickButton}
+        />
+      </>
+    )}
     {price && (
       <RequestButton
         value={`Request Ride (￦ ${price})`}
         onClick={onClickButton}
       />
     )}
-    <ExtendedButton
-      value={price ? "Change address" : "Pick this place"}
-      onClick={onClickButton}
-    />
+
     <Map ref={mapRef} />
   </Container>
 );

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import HomePresenter from "./HomePresenter";
 import { GoogleAPI } from "google-maps-react";
@@ -7,14 +7,16 @@ import { toast } from "react-toastify";
 import { Location } from "src/types";
 import useInput from "src/Hooks/useInput";
 import { geoCode } from "src/mapHelpers";
-import { useMutation } from "@apollo/react-hooks";
-import { REPORT_LOCATION } from "./HomeQueries";
+import { useMutation, useQuery } from "@apollo/react-hooks";
+import { REPORT_LOCATION, GET_NEARBY_DRIVERS } from "./HomeQueries";
+import { UserContext } from "src/Context/UserContext";
 
 interface IProps extends RouteComponentProps {
   google: GoogleAPI;
 }
 
 const HomeContainer: React.FC<IProps> = () => {
+  const { user } = useContext(UserContext);
   const mapRef = useRef<HTMLDivElement>();
   const maps = google.maps;
   const [map, setMap] = useState<google.maps.Map>();
@@ -30,11 +32,16 @@ const HomeContainer: React.FC<IProps> = () => {
   const [toMarker, setToMarKer] = useState<google.maps.Marker | undefined>(
     undefined
   );
+  const [driverMarkers, setDriverMarkers] = useState<google.maps.Marker[]>([]);
   const [directions, setDirections] = useState<
     google.maps.DirectionsRenderer | undefined
   >(undefined);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [reportLocationMutation] = useMutation(REPORT_LOCATION);
+  const { data } = useQuery(GET_NEARBY_DRIVERS, {
+    skip: user.isDriving,
+    pollInterval: 1000,
+  });
 
   const onSetOpen = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -119,7 +126,6 @@ const HomeContainer: React.FC<IProps> = () => {
         travelMode: google.maps.TravelMode.TRANSIT,
       };
       directionService.route(directionsOptions, (result, status) => {
-        console.log(result, status);
         if (status === google.maps.DirectionsStatus.OK) {
           const { routes } = result;
           const { legs } = routes[0];
@@ -143,8 +149,73 @@ const HomeContainer: React.FC<IProps> = () => {
     }
   };
 
-  const loadMap = async (lat: number, lng: number) => {
+  const handleNearbyDrivers = (data) => {
+    if (map) {
+      if ("GetNearbyDrivers" in data) {
+        const {
+          GetNearbyDrivers: { drivers, ok },
+        } = data;
+        if (ok && drivers) {
+          drivers.map((driver) => {
+            if (driverMarkers) {
+              const existingDriver:
+                | google.maps.Marker
+                | undefined = driverMarkers.find(
+                (driverMarker: google.maps.Marker) => {
+                  const markerId = driverMarker.get("ID");
+                  return markerId === driver.id;
+                }
+              );
+
+              if (existingDriver) {
+                existingDriver.setPosition({
+                  lat: driver.lastLat,
+                  lng: driver.lastLng,
+                });
+                existingDriver.setMap(map);
+              } else {
+                handleDriverMarkers(driver);
+              }
+            } else {
+              handleDriverMarkers(driver);
+            }
+          });
+        }
+      }
+    }
+  };
+
+  const handleDriverMarkers = (driver) => {
+    if (map) {
+      const markerOptions: google.maps.MarkerOptions = {
+        position: {
+          // @ts-ignore
+          lat: Number(driver.lastLat),
+          // @ts-ignore
+          lng: Number(driver.lastLng),
+        },
+        icon: {
+          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+          scale: 5,
+        },
+      };
+      const newMarker: google.maps.Marker = new google.maps.Marker(
+        markerOptions
+      );
+      // @ts-ignore
+      newMarker.set("ID", driver.id);
+      newMarker.setMap(map);
+      const newMarkers = driverMarkers;
+      driverMarkers.push(newMarker);
+      setDriverMarkers(newMarkers);
+    }
+  };
+
+  const loadMap = (lat: number, lng: number) => {
     const mapNode = ReactDOM.findDOMNode(mapRef.current) as Element;
+    if (!mapNode) {
+      loadMap(lat, lng);
+    }
     const center = {
       lat,
       lng,
@@ -174,7 +245,6 @@ const HomeContainer: React.FC<IProps> = () => {
   }, []);
 
   useEffect(() => {
-    console.log("watch");
     const watchOptions: PositionOptions = {
       enableHighAccuracy: true,
     };
@@ -185,8 +255,13 @@ const HomeContainer: React.FC<IProps> = () => {
     );
   }, [map]);
 
+  useEffect(() => {
+    handleNearbyDrivers(data);
+  }, [data]);
+
   return (
     <HomePresenter
+      user={user}
       isMenuOpen={isMenuOpen}
       onSetOpen={onSetOpen}
       address={address.value}
