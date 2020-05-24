@@ -59,6 +59,9 @@ const FindAddressContainer: React.FC<IProps> = ({ google, history }) => {
   const loadMap = async (lat: number, lng: number) => {
     const maps = google.maps;
     const mapNode = ReactDOM.findDOMNode(mapRef.current) as Element;
+    if (!mapNode) {
+      loadMap(lat, lng);
+    }
     const center = {
       lat,
       lng,
