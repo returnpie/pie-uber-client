@@ -40,7 +40,7 @@ const HomeContainer: React.FC<IProps> = () => {
   const [reportLocationMutation] = useMutation(REPORT_LOCATION);
   const { data } = useQuery(GET_NEARBY_DRIVERS, {
     skip: user.isDriving,
-    pollInterval: 1000,
+    pollInterval: user.isDriving ? 0 : 1000,
   });
 
   const onSetOpen = () => {
