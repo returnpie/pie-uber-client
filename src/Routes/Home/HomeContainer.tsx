@@ -151,7 +151,7 @@ const HomeContainer: React.FC<IProps> = () => {
 
   const handleNearbyDrivers = (data) => {
     if (map) {
-      if ("GetNearbyDrivers" in data) {
+      if (data && "GetNearbyDrivers" in data) {
         const {
           GetNearbyDrivers: { drivers, ok },
         } = data;
@@ -166,7 +166,6 @@ const HomeContainer: React.FC<IProps> = () => {
                   return markerId === driver.id;
                 }
               );
-
               if (existingDriver) {
                 existingDriver.setPosition({
                   lat: driver.lastLat,
@@ -258,6 +257,16 @@ const HomeContainer: React.FC<IProps> = () => {
   useEffect(() => {
     handleNearbyDrivers(data);
   }, [data]);
+
+  useEffect(() => {
+    if (user.isDriving) {
+      const newDriverMarkers = driverMarkers;
+      newDriverMarkers.map((driverMarker) => {
+        driverMarker.setMap(null);
+      });
+      setDriverMarkers(newDriverMarkers);
+    }
+  }, [user.isDriving]);
 
   return (
     <HomePresenter
