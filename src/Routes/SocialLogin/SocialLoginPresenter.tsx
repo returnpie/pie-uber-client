@@ -1,5 +1,5 @@
 import React from "react";
-// import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Helmet from "react-helmet";
 import BackArrow from "src/Components/BackArrow";
 import styled from "styled-components";
@@ -14,15 +14,15 @@ const Title = styled.h2`
   margin-bottom: 40px;
 `;
 
-// const Link = styled.span`
-//   display: flex;
-//   align-items: center;
-//   cursor: pointer;
-// `;
+const Link = styled.span`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
 
-// const Icon = styled.span`
-//   margin-right: 10px;
-// `;
+const Icon = styled.span`
+  margin-right: 10px;
+`;
 
 const BackArrowExtended = styled(BackArrow)`
   position: absolute;
@@ -31,22 +31,22 @@ const BackArrowExtended = styled(BackArrow)`
 `;
 
 interface IProps {
-  // loginCallback: (response) => void;
+  loginCallback: (response) => void;
 }
 
-const SocialLoginPresenter: React.SFC<IProps> = () => (
+const SocialLoginPresenter: React.SFC<IProps> = ({ loginCallback }) => (
   <Container>
     <Helmet>
       <title>Social Login | uber</title>
     </Helmet>
     <Title>Choose an account</Title>
     <BackArrowExtended backTo={"/"} />
-    {/* <FacebookLogin
-      appId="1718196768212364"
+    <FacebookLogin
+      appId="178284823509620"
       autoLoad={false}
       fields="name,first_name,last_name,email"
       callback={loginCallback}
-      render={renderProps => (
+      render={(renderProps) => (
         <Link onClick={renderProps.onClick}>
           <Icon>
             <svg
@@ -62,7 +62,7 @@ const SocialLoginPresenter: React.SFC<IProps> = () => (
           Facebook
         </Link>
       )}
-    /> */}
+    />
   </Container>
 );
 
