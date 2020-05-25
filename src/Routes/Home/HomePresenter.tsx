@@ -59,6 +59,7 @@ interface IProps {
   onBlur: () => void;
   onClickButton: () => void;
   price: string;
+  onClickRequestButton: () => void;
   mapRef: any;
 }
 
@@ -72,6 +73,7 @@ const HomePresenter: React.SFC<IProps> = ({
   onBlur,
   onClickButton,
   price,
+  onClickRequestButton,
   mapRef,
 }) => (
   <Container>
@@ -105,7 +107,7 @@ const HomePresenter: React.SFC<IProps> = ({
     {price && (
       <RequestButton
         value={`Request Ride (￦ ${price})`}
-        onClick={onClickButton}
+        onClick={onClickRequestButton}
       />
     )}
 

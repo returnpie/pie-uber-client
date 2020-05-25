@@ -6,9 +6,13 @@ import ReactDOM from "react-dom";
 import { toast } from "react-toastify";
 import { Location } from "src/types";
 import useInput from "src/Hooks/useInput";
-import { geoCode } from "src/mapHelpers";
+import { geoCode, reverseGeoCode } from "src/mapHelpers";
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { REPORT_LOCATION, GET_NEARBY_DRIVERS } from "./HomeQueries";
+import {
+  REPORT_LOCATION,
+  GET_NEARBY_DRIVERS,
+  REQUEST_RIDE,
+} from "./HomeQueries";
 import { UserContext } from "src/Context/UserContext";
 
 interface IProps extends RouteComponentProps {
@@ -22,10 +26,11 @@ const HomeContainer: React.FC<IProps> = () => {
   const [map, setMap] = useState<google.maps.Map>();
   const [latLng, setLatLng] = useState<Location>({ lat: 0, lng: 0 });
   const [toLatLng, setToLatLng] = useState<Location>({ lat: 0, lng: 0 });
-  const [distance, setDistance] = useState("");
-  const [duration, setDuration] = useState("");
-  const [price, setPrice] = useState("");
+  const [distance, setDistance] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
   const address = useInput();
+  const [fromAddress, setFromAddress] = useState<string>("");
   const [marker, setMarKer] = useState<google.maps.Marker | undefined>(
     undefined
   );
@@ -37,11 +42,12 @@ const HomeContainer: React.FC<IProps> = () => {
     google.maps.DirectionsRenderer | undefined
   >(undefined);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [reportLocationMutation] = useMutation(REPORT_LOCATION);
   const { data } = useQuery(GET_NEARBY_DRIVERS, {
     skip: user.isDriving,
     pollInterval: user.isDriving ? 0 : 1000,
   });
+  const [reportLocationMutation] = useMutation(REPORT_LOCATION);
+  const [requestRideMutation] = useMutation(REQUEST_RIDE);
 
   const onSetOpen = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -61,12 +67,20 @@ const HomeContainer: React.FC<IProps> = () => {
     }
   };
 
+  const getFromAddress = async (lat: number, lng: number) => {
+    const address = await reverseGeoCode({ lat, lng });
+    if (address) {
+      setFromAddress(address);
+    }
+  };
+
   const handleGeoSuccess: PositionCallback = (position: Position) => {
     const {
       coords: { latitude: lat, longitude: lng },
     } = position;
     setLatLng({ lat, lng });
     loadMap(lat, lng);
+    getFromAddress(lat, lng);
   };
 
   const handleGeoError: PositionErrorCallback = () => {
@@ -141,7 +155,7 @@ const HomeContainer: React.FC<IProps> = () => {
           setDirections(newDirections);
           setDistance(distance);
           setDuration(duration);
-          setPrice(price.toLocaleString());
+          setPrice(price);
         } else {
           toast.error("There is no route there..");
         }
@@ -208,6 +222,23 @@ const HomeContainer: React.FC<IProps> = () => {
       driverMarkers.push(newMarker);
       setDriverMarkers(newMarkers);
     }
+  };
+
+  const onClickRequestButton = async () => {
+    const { data } = await requestRideMutation({
+      variables: {
+        pickUpAddress: fromAddress,
+        pickUpLat: latLng.lat,
+        pickUpLng: latLng.lng,
+        dropOffAddress: address.value,
+        dropOffLat: toLatLng.lat,
+        dropOffLng: toLatLng.lng,
+        price,
+        distance,
+        duration,
+      },
+    });
+    console.log(data);
   };
 
   const loadMap = (lat: number, lng: number) => {
@@ -278,7 +309,8 @@ const HomeContainer: React.FC<IProps> = () => {
       onKeyDown={onKeyDown}
       onBlur={onBlur}
       onClickButton={onClickButton}
-      price={price}
+      price={price ? price.toLocaleString() : ""}
+      onClickRequestButton={onClickRequestButton}
       mapRef={mapRef}
     />
   );
