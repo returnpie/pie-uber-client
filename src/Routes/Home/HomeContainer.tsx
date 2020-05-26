@@ -12,6 +12,7 @@ import {
   REPORT_LOCATION,
   GET_NEARBY_DRIVERS,
   REQUEST_RIDE,
+  GET_NEARBY_RIDE,
 } from "./HomeQueries";
 import { UserContext } from "src/Context/UserContext";
 
@@ -42,7 +43,11 @@ const HomeContainer: React.FC<IProps> = () => {
     google.maps.DirectionsRenderer | undefined
   >(undefined);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const { data } = useQuery(GET_NEARBY_DRIVERS, {
+  const { data: driversData } = useQuery(GET_NEARBY_DRIVERS, {
+    skip: user.isDriving,
+    pollInterval: user.isDriving ? 0 : 1000,
+  });
+  const { data } = useQuery(GET_NEARBY_RIDE, {
     skip: user.isDriving,
     pollInterval: user.isDriving ? 0 : 1000,
   });
@@ -163,12 +168,12 @@ const HomeContainer: React.FC<IProps> = () => {
     }
   };
 
-  const handleNearbyDrivers = (data) => {
+  const handleNearbyDrivers = (driversData) => {
     if (map) {
-      if (data && "GetNearbyDrivers" in data) {
+      if (driversData && "GetNearbyDrivers" in driversData) {
         const {
           GetNearbyDrivers: { drivers, ok },
-        } = data;
+        } = driversData;
         if (ok && drivers) {
           drivers.map((driver) => {
             if (driverMarkers) {
@@ -238,7 +243,11 @@ const HomeContainer: React.FC<IProps> = () => {
         duration,
       },
     });
-    console.log(data);
+    if (data && data.RequestRide && data.RequestRide.ok) {
+      toast.success("Drive requested, finding a driver");
+    } else {
+      toast.error(data.RequestRide.error);
+    }
   };
 
   const loadMap = (lat: number, lng: number) => {
@@ -286,8 +295,8 @@ const HomeContainer: React.FC<IProps> = () => {
   }, [map]);
 
   useEffect(() => {
-    handleNearbyDrivers(data);
-  }, [data]);
+    handleNearbyDrivers(driversData);
+  }, [driversData]);
 
   useEffect(() => {
     if (user.isDriving) {
