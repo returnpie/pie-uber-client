@@ -26,3 +26,13 @@ export interface AddPlaceState {
   };
   address: string;
 }
+
+export interface RideData {
+  pickUpAddress: string;
+  dropOffAddress: string;
+  price: number;
+  distance: string;
+  passengerName: string;
+  passengerPhoto: string;
+  id: number;
+}
