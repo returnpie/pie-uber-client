@@ -7,6 +7,7 @@ import Menu from "src/Components/Menu";
 import AddressBar from "src/Components/AddressBar";
 import Button from "src/Components/Button";
 import { User } from "src/types";
+import RidePopUp from "src/Components/RidePopUp";
 
 const Container = styled.div``;
 
@@ -60,6 +61,7 @@ interface IProps {
   onClickButton: () => void;
   price: string;
   onClickRequestButton: () => void;
+  rideData: any;
   mapRef: any;
 }
 
@@ -74,6 +76,7 @@ const HomePresenter: React.SFC<IProps> = ({
   onClickButton,
   price,
   onClickRequestButton,
+  rideData,
   mapRef,
 }) => (
   <Container>
@@ -109,6 +112,9 @@ const HomePresenter: React.SFC<IProps> = ({
         value={`Request Ride (￦ ${price})`}
         onClick={onClickRequestButton}
       />
+    )}
+    {rideData && rideData.GetNearbyRide && rideData.GetNearbyRide.ok && (
+      <RidePopUp rideData={rideData.GetNearbyRide.ride} />
     )}
 
     <Map ref={mapRef} />

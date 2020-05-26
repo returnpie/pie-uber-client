@@ -47,9 +47,9 @@ const HomeContainer: React.FC<IProps> = () => {
     skip: user.isDriving,
     pollInterval: user.isDriving ? 0 : 1000,
   });
-  const { data } = useQuery(GET_NEARBY_RIDE, {
-    skip: user.isDriving,
-    pollInterval: user.isDriving ? 0 : 1000,
+  const { data: rideData } = useQuery(GET_NEARBY_RIDE, {
+    skip: !user.isDriving,
+    pollInterval: !user.isDriving ? 0 : 1000,
   });
   const [reportLocationMutation] = useMutation(REPORT_LOCATION);
   const [requestRideMutation] = useMutation(REQUEST_RIDE);
@@ -299,6 +299,10 @@ const HomeContainer: React.FC<IProps> = () => {
   }, [driversData]);
 
   useEffect(() => {
+    console.log(rideData);
+  }, [rideData]);
+
+  useEffect(() => {
     if (user.isDriving) {
       const newDriverMarkers = driverMarkers;
       newDriverMarkers.map((driverMarker) => {
@@ -320,6 +324,7 @@ const HomeContainer: React.FC<IProps> = () => {
       onClickButton={onClickButton}
       price={price ? price.toLocaleString() : ""}
       onClickRequestButton={onClickRequestButton}
+      rideData={rideData}
       mapRef={mapRef}
     />
   );
