@@ -7,12 +7,13 @@ import { toast } from "react-toastify";
 import { Location } from "src/types";
 import useInput from "src/Hooks/useInput";
 import { geoCode, reverseGeoCode } from "src/mapHelpers";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useMutation, useQuery, useSubscription } from "@apollo/react-hooks";
 import {
   REPORT_LOCATION,
   GET_NEARBY_DRIVERS,
   REQUEST_RIDE,
   GET_NEARBY_RIDE,
+  SUBSCRIBE_NEARBY_RIDES,
 } from "./HomeQueries";
 import { UserContext } from "src/Context/UserContext";
 
@@ -20,10 +21,11 @@ interface IProps extends RouteComponentProps {
   google: GoogleAPI;
 }
 
-const HomeContainer: React.FC<IProps> = () => {
+const HomeContainer: React.FC<IProps> = ({ history }) => {
   const { user } = useContext(UserContext);
   const mapRef = useRef<HTMLDivElement>();
   const maps = google.maps;
+  const [isMapNodeLoading, setIsMapNodeLoading] = useState<boolean>(false);
   const [map, setMap] = useState<google.maps.Map>();
   const [latLng, setLatLng] = useState<Location>({ lat: 0, lng: 0 });
   const [toLatLng, setToLatLng] = useState<Location>({ lat: 0, lng: 0 });
@@ -45,14 +47,50 @@ const HomeContainer: React.FC<IProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { data: driversData } = useQuery(GET_NEARBY_DRIVERS, {
     skip: user.isDriving,
-    pollInterval: user.isDriving ? 0 : 1000,
+    // pollInterval: user.isDriving ? 0 : 1000,
   });
-  const { data: rideData } = useQuery(GET_NEARBY_RIDE, {
+  const { subscribeToMore, data: rideData } = useQuery(GET_NEARBY_RIDE, {
     skip: !user.isDriving,
-    pollInterval: !user.isDriving ? 0 : 1000,
   });
+  useEffect(() => {
+    if (user.isDriving) {
+      subscribeToMore({
+        document: SUBSCRIBE_NEARBY_RIDES,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          } else {
+            const newObject = Object.assign({}, prev, {
+              GetNearbyRide: {
+                ...prev.GetNearbyRide,
+                ride: subscriptionData.data.NearbyRideSubscription,
+              },
+            });
+            console.log(newObject);
+            return newObject;
+          }
+        },
+      });
+    }
+  }, [user.isDriving]);
+  // const { data: rideData } = useSubscription(SUBSCRIBE_NEARBY_RIDES, {
+  //   skip: !user.isDriving,
+  // });
+
+  // console.log(rideData);
+
+  // useEffect(() => {
+  //   console.log(rideData);
+  // }, [rideData]);
+
+  console.log(map, isMapNodeLoading);
+
   const [reportLocationMutation] = useMutation(REPORT_LOCATION);
   const [requestRideMutation] = useMutation(REQUEST_RIDE);
+
+  const isMapNodeLoaded = () => {
+    setIsMapNodeLoading(true);
+  };
 
   const onSetOpen = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -80,16 +118,16 @@ const HomeContainer: React.FC<IProps> = () => {
   };
 
   const handleGeoSuccess: PositionCallback = (position: Position) => {
+    console.log("go succ");
     const {
       coords: { latitude: lat, longitude: lng },
     } = position;
-    setLatLng({ lat, lng });
     loadMap(lat, lng);
-    getFromAddress(lat, lng);
   };
 
   const handleGeoError: PositionErrorCallback = () => {
     toast.error("can't find you..");
+    getUserPosition();
   };
 
   const handleGeoWatchSuccess = async (position: Position) => {
@@ -229,6 +267,10 @@ const HomeContainer: React.FC<IProps> = () => {
     }
   };
 
+  const setRideRouterPath = (rideId: number) => {
+    history.push(`/ride/${rideId}`, { rideId });
+  };
+
   const onClickRequestButton = async () => {
     const { data } = await requestRideMutation({
       variables: {
@@ -245,27 +287,31 @@ const HomeContainer: React.FC<IProps> = () => {
     });
     if (data && data.RequestRide && data.RequestRide.ok) {
       toast.success("Drive requested, finding a driver");
+      setRideRouterPath(data.RequestRide.ride.id);
     } else {
       toast.error(data.RequestRide.error);
     }
   };
 
   const loadMap = (lat: number, lng: number) => {
+    console.log("start load");
     const mapNode = ReactDOM.findDOMNode(mapRef.current) as Element;
+    console.log("find");
     if (!mapNode) {
+      console.log("reload");
       loadMap(lat, lng);
-    }
-    const center = {
-      lat,
-      lng,
-    };
-    const mapConfig: google.maps.MapOptions = {
-      zoom: 15,
-      center,
-      disableDefaultUI: true,
-    };
-    if (mapNode) {
+    } else {
+      const center = {
+        lat,
+        lng,
+      };
+      const mapConfig: google.maps.MapOptions = {
+        zoom: 15,
+        center,
+        disableDefaultUI: true,
+      };
       const map = new maps.Map(mapNode, mapConfig);
+      console.log(map);
       const newMarker = new google.maps.Marker({
         icon: {
           path: maps.SymbolPath.CIRCLE,
@@ -275,32 +321,45 @@ const HomeContainer: React.FC<IProps> = () => {
         map,
       });
       setMarKer(newMarker);
+      setLatLng(center);
+      getFromAddress(lat, lng);
       setMap(map);
     }
   };
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(handleGeoSuccess, handleGeoError);
-  }, []);
+  const getUserPosition = () => {
+    navigator.geolocation.getCurrentPosition(
+      handleGeoSuccess,
+      handleGeoError,
+      { timeout: 2000 }
+    );
+  }
 
   useEffect(() => {
-    const watchOptions: PositionOptions = {
-      enableHighAccuracy: true,
-    };
-    navigator.geolocation.watchPosition(
-      handleGeoWatchSuccess,
-      handleGeoWatchError,
-      watchOptions
-    );
+    if (isMapNodeLoading) {
+      console.log("go");
+      getUserPosition();
+    }
+  }, [isMapNodeLoading]);
+
+  useEffect(() => {
+    if (map) {
+      const watchOptions: PositionOptions = {
+        enableHighAccuracy: true,
+      };
+      navigator.geolocation.watchPosition(
+        handleGeoWatchSuccess,
+        handleGeoWatchError,
+        watchOptions
+      );
+    }
   }, [map]);
 
   useEffect(() => {
-    handleNearbyDrivers(driversData);
+    if (driversData) {
+      handleNearbyDrivers(driversData);
+    }
   }, [driversData]);
-
-  useEffect(() => {
-    console.log(rideData);
-  }, [rideData]);
 
   useEffect(() => {
     if (user.isDriving) {
@@ -314,6 +373,7 @@ const HomeContainer: React.FC<IProps> = () => {
 
   return (
     <HomePresenter
+      isMapNodeLoaded={isMapNodeLoaded}
       user={user}
       isMenuOpen={isMenuOpen}
       onSetOpen={onSetOpen}
@@ -326,6 +386,7 @@ const HomeContainer: React.FC<IProps> = () => {
       onClickRequestButton={onClickRequestButton}
       rideData={rideData}
       mapRef={mapRef}
+      setRideRouterPath={setRideRouterPath}
     />
   );
 };

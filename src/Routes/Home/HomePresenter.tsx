@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Helmet from "react-helmet";
-// import Button from "src/Components/Button";
 import styled from "styled-components";
 import Sidebar from "react-sidebar";
 import Menu from "src/Components/Menu";
@@ -51,6 +50,7 @@ const RequestButton = styled(ExtendedButton)`
 `;
 
 interface IProps {
+  isMapNodeLoaded: () => void;
   user: User;
   isMenuOpen: boolean;
   onSetOpen: () => void;
@@ -63,9 +63,11 @@ interface IProps {
   onClickRequestButton: () => void;
   rideData: any;
   mapRef: any;
+  setRideRouterPath: (rideId: number) => void;
 }
 
 const HomePresenter: React.SFC<IProps> = ({
+  isMapNodeLoaded,
   user,
   isMenuOpen,
   onSetOpen,
@@ -78,47 +80,61 @@ const HomePresenter: React.SFC<IProps> = ({
   onClickRequestButton,
   rideData,
   mapRef,
-}) => (
-  <Container>
-    <Helmet>
-      <title>Home | uber</title>
-    </Helmet>
-    <Sidebar
-      sidebar={<Menu />}
-      open={isMenuOpen}
-      onSetOpen={onSetOpen}
-      styles={{
-        sidebar: { width: "80%", backgroundColor: "white", zIndex: "10" },
-      }}
-    >
-      <MenuButton onClick={onSetOpen}>|||</MenuButton>
-    </Sidebar>
-    {!user.isDriving && (
-      <>
-        <AddressBar
-          value={address}
-          onChange={onChangeInput}
-          onKeyDown={onKeyDown}
-          onBlur={onBlur}
+  setRideRouterPath
+}) => {
+  console.log(address, Boolean(address));
+  useEffect(() => {
+    isMapNodeLoaded();
+  }, []);
+  return (
+    <Container>
+      <Helmet>
+        <title>Home | uber</title>
+      </Helmet>
+      <Sidebar
+        sidebar={<Menu />}
+        open={isMenuOpen}
+        onSetOpen={onSetOpen}
+        styles={{
+          sidebar: { width: "80%", backgroundColor: "white", zIndex: "10" },
+        }}
+      >
+        <MenuButton onClick={onSetOpen}>|||</MenuButton>
+      </Sidebar>
+      {!user.isDriving && (
+        <>
+          <AddressBar
+            value={address}
+            onChange={onChangeInput}
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}
+          />
+          <ExtendedButton
+            disabled={!address}
+            value={
+              address
+                ? price
+                  ? "Change address"
+                  : "Pick this place"
+                : "Tell me your destination"
+            }
+            onClick={onClickButton}
+          />
+        </>
+      )}
+      {price && (
+        <RequestButton
+          value={`Request Ride (￦ ${price})`}
+          onClick={onClickRequestButton}
         />
-        <ExtendedButton
-          value={price ? "Change address" : "Pick this place"}
-          onClick={onClickButton}
-        />
-      </>
-    )}
-    {price && (
-      <RequestButton
-        value={`Request Ride (￦ ${price})`}
-        onClick={onClickRequestButton}
-      />
-    )}
-    {rideData && rideData.GetNearbyRide && rideData.GetNearbyRide.ok && (
-      <RidePopUp rideData={rideData.GetNearbyRide.ride} />
-    )}
+      )}
+      {rideData && rideData.GetNearbyRide && rideData.GetNearbyRide.ok && (
+        <RidePopUp rideData={rideData.GetNearbyRide.ride} setRideRouterPath={setRideRouterPath} />
+      )}
 
-    <Map ref={mapRef} />
-  </Container>
-);
+      <Map ref={mapRef} />
+    </Container>
+  );
+};
 
 export default HomePresenter;
