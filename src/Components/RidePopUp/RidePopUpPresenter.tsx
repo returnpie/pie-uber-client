@@ -61,8 +61,8 @@ const RidePopUp: React.SFC<IProps> = ({
     <Data>{rideData.distance}</Data>
     <Title>Passenger:</Title>
     <Passenger>
-      <Img src={rideData.passengerPhoto} />
-      <Data>{rideData.passengerName}</Data>
+      <Img src={rideData.passenger.profilePhoto} width="70" height="70" />
+      <Data>{rideData.passenger.fullName}</Data>
     </Passenger>
     <Button
       onClick={onClickButton}
