@@ -12,7 +12,7 @@ const isDev = process.env.NODE_ENV === "development";
 
 const httpUri = isDev
   ? "http://localhost:4000"
-  : "https://pie-uber-server.herokuapp.com/";
+  : "https://pie-uber-server.herokuapp.com";
 const wsUri = isDev
   ? "ws://localhost:4000"
   : "wss://pie-uber-server.herokuapp.com";
