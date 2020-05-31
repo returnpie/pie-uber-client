@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import gql from "graphql-tag";
 
 export const EDIT_PLACE = gql`
   mutation editPlace($placeId: Int!, $isFav: Boolean) {

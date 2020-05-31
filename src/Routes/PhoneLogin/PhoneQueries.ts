@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import gql from "graphql-tag";
 
 export const PHONE_SIGN_IN = gql`
   mutation startPhoneVerification($phoneNumber: String!) {
