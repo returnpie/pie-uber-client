@@ -328,12 +328,11 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   };
 
   const getUserPosition = () => {
-    navigator.geolocation.getCurrentPosition(
-      handleGeoSuccess,
-      handleGeoError,
-      { timeout: 2000 }
-    );
-  }
+    navigator.geolocation.getCurrentPosition(handleGeoSuccess, handleGeoError, {
+      timeout: 5000,
+      enableHighAccuracy: true,
+    });
+  };
 
   useEffect(() => {
     if (isMapNodeLoading) {
