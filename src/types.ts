@@ -32,7 +32,9 @@ export interface RideData {
   dropOffAddress: string;
   price: number;
   distance: string;
-  passengerName: string;
-  passengerPhoto: string;
+  passenger: {
+    fullName: string;
+    profilePhoto: string;
+  }
   id: number;
 }
