@@ -75,9 +75,12 @@ const LoginPresenter: React.SFC = () => {
         </Logo>
       </Header>
       <Footer>
-        <Link to={"/phone-login"}>
+        <Subtitle>
+          Get moving with PIE-uber (헤로쿠 무료사용자 이용중이여서 서버가
+          켜지는데 30분정도 걸릴 수 있습니다.)
+        </Subtitle>
+        {/* <Link to={"/phone-login"}>
           <PhoneLogin>
-            <Subtitle>Get moving with PIE-uber</Subtitle>
             <FakeInput>
               <span role="img" aria-label="">
                 🇰🇷
@@ -85,10 +88,10 @@ const LoginPresenter: React.SFC = () => {
               +82 <Grey>Enter your mobile number</Grey>
             </FakeInput>
           </PhoneLogin>
-        </Link>
+        </Link> */}
         <Link to={"/social-login"}>
           <SocialLogin>
-            <SocialLink>Or connect with social</SocialLink>
+            <SocialLink>Connect with social</SocialLink>
           </SocialLogin>
         </Link>
       </Footer>

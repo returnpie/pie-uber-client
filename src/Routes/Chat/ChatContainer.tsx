@@ -13,7 +13,6 @@ interface IProps extends RouteComponentProps<any> {}
 
 const ChatContainer: React.FC<IProps> = ({ history, match }) => {
   const chatId = Number((match.params as any).chatId);
-  console.log(chatId);
   if (!chatId) {
     // history.replace("/");
   }

@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { Location } from "src/types";
 import useInput from "src/Hooks/useInput";
 import { geoCode, reverseGeoCode } from "src/mapHelpers";
-import { useMutation, useQuery, useSubscription } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import {
   REPORT_LOCATION,
   GET_NEARBY_DRIVERS,
@@ -66,24 +66,12 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
                 ride: subscriptionData.data.NearbyRideSubscription,
               },
             });
-            console.log(newObject);
             return newObject;
           }
         },
       });
     }
   }, [user.isDriving]);
-  // const { data: rideData } = useSubscription(SUBSCRIBE_NEARBY_RIDES, {
-  //   skip: !user.isDriving,
-  // });
-
-  // console.log(rideData);
-
-  // useEffect(() => {
-  //   console.log(rideData);
-  // }, [rideData]);
-
-  console.log(map, isMapNodeLoading);
 
   const [reportLocationMutation] = useMutation(REPORT_LOCATION);
   const [requestRideMutation] = useMutation(REQUEST_RIDE);
@@ -118,7 +106,6 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   };
 
   const handleGeoSuccess: PositionCallback = (position: Position) => {
-    console.log("go succ");
     const {
       coords: { latitude: lat, longitude: lng },
     } = position;
@@ -294,11 +281,8 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   };
 
   const loadMap = (lat: number, lng: number) => {
-    console.log("start load");
     const mapNode = ReactDOM.findDOMNode(mapRef.current) as Element;
-    console.log("find");
     if (!mapNode) {
-      console.log("reload");
       loadMap(lat, lng);
     } else {
       const center = {
@@ -311,7 +295,6 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
         disableDefaultUI: true,
       };
       const map = new maps.Map(mapNode, mapConfig);
-      console.log(map);
       const newMarker = new google.maps.Marker({
         icon: {
           path: maps.SymbolPath.CIRCLE,
@@ -336,7 +319,6 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
 
   useEffect(() => {
     if (isMapNodeLoading) {
-      console.log("go");
       getUserPosition();
     }
   }, [isMapNodeLoading]);

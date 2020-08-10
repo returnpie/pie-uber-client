@@ -80,9 +80,8 @@ const HomePresenter: React.SFC<IProps> = ({
   onClickRequestButton,
   rideData,
   mapRef,
-  setRideRouterPath
+  setRideRouterPath,
 }) => {
-  console.log(address, Boolean(address));
   useEffect(() => {
     isMapNodeLoaded();
   }, []);
@@ -129,7 +128,10 @@ const HomePresenter: React.SFC<IProps> = ({
         />
       )}
       {rideData && rideData.GetNearbyRide && rideData.GetNearbyRide.ok && (
-        <RidePopUp rideData={rideData.GetNearbyRide.ride} setRideRouterPath={setRideRouterPath} />
+        <RidePopUp
+          rideData={rideData.GetNearbyRide.ride}
+          setRideRouterPath={setRideRouterPath}
+        />
       )}
 
       <Map ref={mapRef} />
