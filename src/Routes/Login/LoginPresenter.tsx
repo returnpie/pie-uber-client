@@ -75,10 +75,7 @@ const LoginPresenter: React.SFC = () => {
         </Logo>
       </Header>
       <Footer>
-        <Subtitle>
-          Get moving with PIE-uber (헤로쿠 무료사용자 이용중이여서 서버가
-          켜지는데 30분정도 걸릴 수 있습니다.)
-        </Subtitle>
+        <Subtitle>Get moving with PIE-uber</Subtitle>
         {/* <Link to={"/phone-login"}>
           <PhoneLogin>
             <FakeInput>
