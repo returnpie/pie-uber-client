@@ -22,9 +22,9 @@ export const geoCode = async (address: string) => {
 };
 
 export const reverseGeoCode = async ({ lat, lng }: Location) => {
-  console.log(data)''
   const URL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${MAPS_KEY}`;
   const { data } = await axios(URL);
+  console.log(data);
   if (data && data.results) {
     const { results } = data;
     const firstPlace = results[0];
